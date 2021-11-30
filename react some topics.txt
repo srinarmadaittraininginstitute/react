@@ -1,0 +1,333 @@
+ReactJS Forwarding Refs
+
+The forwardRef method in React allows parent components to move down (or “forward”) refs to their children. ForwardRef gives a child component a reference to a DOM entity created by its parent component in React. This helps the child to read and modify the element from any location where it is used.
+
+How does forwardRef work in React?
+
+In React, parent components typically use props to transfer data down to their children. Consider you make a child component with a new set of props to change its behavior. We need a way to change the behavior of a child component without having to look for the state or re-rendering the component. We can do this by using refs. We can access a DOM node that is represented by an element using refs. As a result, we will make changes to it without affecting its state or having to re-render it.
+
+When a child component needs to refer to its parent’s current node, the parent component must have a way for the child to receive its ref. The technique is known as ref forwarding.
+
+Syntax:
+
+React.forwardRef((props, ref) => {})
+Parameters: It takes a function with props and ref arguments.
+
+Return Value:  This function returns a JSX Element.
+
+Creating React Application:
+
+Step 1: Create a React application using the following command:
+
+npx create-react-app foldername
+
+Step 2: After creating your project folder i.e. foldername, move to it using the following command:
+
+cd foldername
+
+Example: Now write down the following code in the App.js file. Here, App is our default component where we have written our code.
+
+import React from 'react'
+
+class App extends React.Component {
+constructor(props) {
+	super(props)
+	this.aRef = React.createRef()
+}
+render() {
+	return (
+	<>
+		<Counter ref={this.aRef} />
+		<button onClick={() => { console.log(this.aRef) }}>
+		Ref
+		</button>
+	</>
+	)
+}
+}
+
+const Counter = React.forwardRef((props, ref) => {
+class Counter extends React.Component {
+	constructor(props) {
+	super(props)
+	this.state = {
+		count: 0
+	}
+	}
+	render() {
+	return (
+		<div>
+		Count: {this.state.count}
+		<button ref={ref} onClick={() => this.setState(
+			{ count: this.state.count + 1 })}>
+				Increment
+		</button>
+		</div>
+	)
+	}
+}
+return <Counter />
+})
+
+export default App
+
+Explanation: Since the counter is within the function, it can access the props and ref parameters using a closure. The counter is rendered and returned. The ref passed to the Counter component is set to the value of the button element’s ref attribute. The counter element’s ref attribute will now be set to refer to the button element.
+
+The Counter component is rendered by the App component. It starts by creating a ref this.aRef is assigned to the Counter component’s ref attribute as a value. We’ve included a button that logs the value of this.aRef. The this.aRef will hold the HTMLButtonElement of the Incr button in the Counter component. Clicking on the Ref button will confirm that It will log this.aRef which will log the object of the Incr button HTMLButtonElement. It didn’t log the instance of the Counter because the Counter component forwarded it to its child component, the Increment button.
+
+Step to Run Application: Run the application using the following command from the root directory of the project:
+npm start
+Output: Now open your browser and go to http://localhost:3000/, you will see the following output:
+
+
+React.js Higher-Order Components
+
+Higher-order components or HOC is the advanced method of reusing the component functionality logic. It simply takes the original component and returns the enhanced component.
+
+Syntax:
+
+const EnhancedComponent = higherOrderComponent(OriginalComponent);
+Reason to use Higher-Order component:
+
+Easy to handle
+Get rid of copying the same logic in every component
+Makes code more readable
+Creating React Application:
+
+Step 1: Create a React application using the following command.
+
+
+
+
+npx create-react-app foldername
+Step 2: After creating your project folder i.e. foldername, move to it using the following command.
+
+cd foldername
+
+Example 1: Let say, we need to reuse the same logic, like passing on the name to every component.
+
+import React from 'react'
+
+const EnhancedComponent = (OriginalComponent) => {
+	class NewCompoenent extends React.Component {
+
+		// Logic here
+
+		render() {
+			// Pass the callable props to Original component
+			return <OriginalComponent name="Sairam" />
+		}
+	}
+	// Returns the new component
+	return NewCompoenent
+}
+
+export default EnhancedComponent;
+
+Output: Here, we pass the name as a prop with the value for calling out from different components.
+
+
+
+Example 2: In this example let’s implement some logic. Let’s make a counter app. In HighOrder.js, we pass the handleclick and show props for calling the functionality of the component.
+import React from 'react'
+
+const EnhancedComponent = (OriginalComponent) => {
+	class NewCompoenent extends React.Component {
+
+		constructor(props) {
+			super(props);
+			// Set initial count to be 0
+			this.state = { count: 0 };
+		}
+
+		handleClick = () => {
+			// Incrementing the count
+			this.setState({ count: this.state.count + 1 });
+		}
+
+		render() {
+
+			// passed a handleclick and count in the originalComponent
+			// as a props for calling and adding the functionality
+			return <OriginalComponent
+				handleclick={this.handleClick}
+				show={this.state.count} />
+		}
+	}
+	// Returns the new component
+	return NewCompoenent
+}
+// Export main Component
+export default EnhancedComponent
+
+import React from 'react'
+import "./App.css"
+// importing HighOrder file
+import EnhancedComponent from './HighOrder'
+
+class App extends React.Component {
+render() {
+	// Destructuring the props
+	const { show, handleclick } = this.props
+
+	// Calling out the props
+	return <button onClick={handleclick}>{show}
+	</button>
+}
+}
+
+
+export default EnhancedComponent(App);
+
+ReactJS Portals
+
+React portals come up with a way to render children into a DOM node that occurs outside the DOM hierarchy of the parent component. The portals were introduced in React 16.0 version.
+
+So far we were having one DOM element in the HTML into which we were mounting our react application, i.e., the root element of our index.html in the public folder. Basically, we mount our App component onto our root element. It is almost a convention to have a div element with the id of root to be used as the root DOM element. If you take a look at the browser in the DOM tree every single React component in our application falls under the root element, i.e., inside this statement.
+
+<div id="root"></div>
+
+But React Portals provide us the ability to break out of this dom tree and render a component onto a dom node that is not under this root element. Doing so breaks the convention where a component needs to be rendered as a new element and follow a parent-child hierarchy. They are commonly used in modal dialog boxes, hovercards, loaders, and popup messages.
+
+Syntax:
+
+ReactDOM.createPortal(child, container)
+Parameters: Here the first parameter is a child which can be a React element, string, or a fragment and the second parameter is a container which is the DOM node (or location) lying outside the DOM hierarchy of the parent component at which our portal is to be inserted.
+
+Importing: To create and use portals you need to import ReactDOM as shown below.
+
+import ReactDOM from 'react-dom';
+Creating React Application:
+
+Step 1: Create a React application using the following command.
+
+npx create-react-app foldername
+Step 2: After creating your project folder i.e. foldername, move to it using the following command.
+
+cd foldername
+
+Example: Now write down the following code in the App.js file. Here, App is our default component where we have written our code.
+
+import ReactDOM from 'react-dom'
+function App() {
+
+// Creating a portal
+return ReactDOM.createPortal(
+	<h1>Portal demo</h1>,
+	document.getElementById('portal')
+)
+}
+
+export default App;
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta name="theme-color" content="#000000" />
+	<meta
+	name="description"
+	content="Web site created using create-react-app"
+	/>
+	<link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+	<link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+	<title>React App</title>
+</head>
+<body>
+	<noscript>
+	You need to enable JavaScript to run this app.
+	</noscript>
+	<div id="root"></div>
+	
+	<!-- new div added to access the child component -->
+	<div id="portal"></div>
+</body>
+</html>
+
+Explanation: Here, we can see that our <h1> tag Portal Demo is under the newly created portal DOM node, not the traditional root DOM node. It clearly tells us how React Portal provides the ability to break out of the root DOM tree and renders a component/element outside the parent DOM element.
+
+Event Bubbling inside a portal: Although we don’t render a portal inside the parent DOM element, its behavior is still similar to a regular React component inside the application. It can access the props and state as it resides inside the DOM tree hierarchy. For example, if we fire an event from inside a portal it will propagate to the Parent component in the containing React tree, i.e., event bubbling works the same way as it does in normal circumstances. Let us understand this with another example:
+
+Example: Program to demonstrate how event bubbling works with portals. Here, we are going to update the previous value of the state by triggering an event listener from outside of the parent DOM node.
+
+import React, { Component } from 'react'
+import ReactDOM from 'react-dom'
+
+class Portal extends Component {
+render() {
+
+	// Creating portal
+	return ReactDOM.createPortal(
+	<button style={{marginLeft: '10px'}}>
+		Click
+	</button>,
+	document.getElementById('portal')
+	);
+}
+}
+
+class App extends Component {
+constructor(props) {
+	super(props);
+	
+	// Set initial state
+	this.state = {click: 0};
+	
+	// Binding this keyword
+	this.handleClick = this.handleClick.bind(this);
+}
+
+handleClick() {
+	// This will trigger when the button inside Portal
+	// is clicked, It updates Parent's state, even though it
+	// is not rendered inside the parent DOM element
+	this.setState(prevState => ({
+	click: prevState.click + 1
+	}));
+}
+
+render() {
+	return (
+	<div onClick={this.handleClick}
+		style={{marginLeft: '10px'}}>
+	<p>
+		You have clicked me {this.state.click} times
+	</p>
+
+	<Portal />
+	</div>
+	);
+}
+}
+
+export default App;
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta name="theme-color" content="#000000" />
+	<meta
+	name="description"
+	content="Web site created using create-react-app"
+	/>
+	<link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+	<link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+	<title>React App</title>
+</head>
+<body>
+	<noscript>You need to enable JavaScript to run this app.</noscript>
+	<div id="root"></div>
+	
+	<!-- new div added to access the child component -->
+	<div id="portal"></div>
+</body>
+</html>
+
+
+Explanation: We create a state count with an initial value of 0 and a function handleClick which increments the previous value of state by 1. The latter gets triggered as an onClick event when we click on the button which has been rendered outside the root DOM node. Even then, it is able to propagate the event to the parent component and access the state value as if it is a regular React component.
