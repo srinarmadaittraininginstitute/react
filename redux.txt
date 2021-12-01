@@ -1,0 +1,153 @@
+Redux 
+What is Redux?
+Redux is an open-source JavaScript library for managing application state. It is most commonly used with libraries such as React or Angular for building user interfaces. It was created by Dan Abramov and Andrew Clark.
+
+Install Packages
+To use redux in our react project. We need two packages redux and react-redux. React-redux is a special package to allow redux in react project.
+
+Run below two commands to install packages
+
+npm install redux --save
+npm install react-redux --save
+Now we have those two package ready. Now it’s time to create a simple program
+
+Open App.js file and create a program to incress and decress value
+
+import React from 'react';
+import './App.css';
+ 
+class App extends React.Component {
+ 
+  state = {
+    experience: 7
+  }
+ 
+  onExperienceUp = () => {
+    this.setState({
+      experience: ++this.state.experience
+    })
+  }
+ 
+  onExperienceDown = () => {
+    this.setState({
+      experience: --this.state.experience
+    })
+  }
+ 
+  render() {
+    return (
+      <div className="App">
+        <div>Current Expirence: {this.state.experience}</div>
+        <button onClick={this.onExperienceUp}>UP</button>
+        <button onClick={this.onExperienceDown}>Down</button>
+      </div>
+    );
+  }
+ 
+}
+ 
+export default App;
+
+In the above example, You will see the “7” as default experience and then you will get “UP” and “DOWN” button to increase and decrease the experience. Right now this example simple store data in current component state now we will move to Store all data on “Redux” Store to access this value everywhere.
+
+Next, We will create store.
+
+What is Store?
+A store holds the whole state tree of your application. The only way to change the state inside it is to dispatch an action on it.
+
+To create a store, you would need two things state and reducer. Reducer is nothing but it is a simple function. To create store. Create a new file called “reducer.js” under store folder. Below is the example reducer.js file
+
+const initialState = {
+    experience: 7
+}
+ 
+const reducer = (state = initialState, action) => {
+    const newState = {...state};
+ 
+    if(action.type === 'EXPERIENCE_UP') {
+        newState.experience++;
+    }
+     
+    if(action.type === 'EXPERIENCE_DOWN') {
+        newState.experience--;
+    }
+    return newState;
+}
+ 
+export default reducer;
+
+The “initialState” is our application state. Where all value will be store.
+
+The “reducer” is a reducer which is able to change the ” initialState”.
+
+Next, Let’s connect our application with “Redux”.
+
+Now we have reducer. Remember the store has to be global. The store has to be done at highest level. And highest level of React application is “index.js”. So open the “index.js” file and do the following changes
+
+import React from 'react';
+import ReactDOM from 'react-dom';
+import './index.css';
+import App from './App';
+import * as serviceWorker from './serviceWorker';
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
+import reducer from '../src/store/reducer';
+ 
+const store = createStore(reducer);
+ 
+ 
+ReactDOM.render(
+  <React.StrictMode>
+    <Provider store={store}>
+      <App />
+    </Provider>
+  </React.StrictMode>,
+  document.getElementById('root')
+);
+ 
+// If you want your app to work offline and load faster, you can change
+// unregister() to register() below. Note this comes with some pitfalls.
+// Learn more about service workers: https://bit.ly/CRA-PWA
+serviceWorker.unregister();
+
+Now store is available to the entire application, Let’s see above changes
+
+The <Provider /> makes the Redux store available to any nested components that have been wrapped in the connect() function. In the simple terms the “Provider” allows us to inject the global store.
+
+The “createStore ” allow us to create the store.
+
+Next, Open the App.js file and do the following changes to access the Redux store.
+
+import React from 'react';
+import './App.css';
+import { connect } from 'react-redux';
+ 
+class App extends React.Component {
+    
+  render() {
+    return (
+      <div className="App">
+        <div>Current Experience: {this.props.experience}</div>
+        <button onClick={this.props.onExperienceUp}>UP</button>
+        <button onClick={this.props.onExperienceDown}>Down</button>
+      </div>
+    );
+  }
+ 
+}
+ 
+const mapStateToProps = (state) => {
+  return {
+    experience: state.experience
+  }
+};
+ 
+const mapDispatchToProps = ( dispatch ) => {
+  return {
+    onExperienceUp: () => dispatch({type: 'EXPERIENCE_UP'}),
+    onExperienceDown: () => dispatch({type: 'EXPERIENCE_DOWN'}),
+  }
+};
+ 
+export default connect(mapStateToProps, mapDispatchToProps)(App);
+
