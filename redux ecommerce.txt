@@ -1,0 +1,199 @@
+we are going to create our new react application with the name npx create-react-app Redux-com 
+
+So now I will navigate into this react ecom folder.
+
+So now I will run this application.
+
+The execution is completed now I will run this application into Google Chrome.
+
+navigate to src folder create files
+Navbar.js
+Items.js
+Additem.js
+Footer.js
+Cart.js
+Item.js
+
+we are going to make the required components and we are going to add some static data in all that components.
+
+import React from 'react';
+
+export default function Additem(){
+    return(
+        <div>
+            <h1>This is Add Item Component</h1>
+        </div>
+    )
+}
+
+run the application. 
+we have to display 2 components in the home page.
+navbar
+items
+for routing install routing 
+------------------------------------
+npm i react-router-dom redux react-redux bootstrap redux-persist
+
+react-persist we are going to use persiststore. Because after clicking the refresh also cart should be remains same. so we use react-persist.
+
+run the application
+
+in app.js
+
+first import navbar and items
+
+import { BrowserRouter, Route,Switch} from 'react-router-dom';
+
+with the help of three we are going to create routes and we are going to render the components in the respective routes from react Dom controls
+
+Now we are going to place all our components in the browser router tag because we are going to use the router and we have to render the components when it matches the router. So first we have to create the browser routers
+in that browser router. We have to create the switch because we have to switch from one components to another component. Now we have to render the components, so the first component we are going to render is items component. So I will create a router.
+Nothing that means it is home page whenever it is localhost 3000, we have to show the items component
+
+in the application.
+
+import { BrowserRouter, Route,Switch} from 'react-router-dom';
+export default function App(){
+	const persistConfig={
+		key:'root',
+		storage
+	}
+	const persistedReducer=persistReducer(persistConfig,rootReducer)
+	const store=createStore(persistedReducer)
+	const persistor=persistStore(store)
+
+    return(
+        <div className="App">
+		<Navbar />
+        <BrowserRouter>
+			<Switch>
+				<Route path="/" component={Items} exact />
+				<Route path="/additem" component={Additem} />
+				<Route path="/cart" component={Cart} />
+			</Switch>
+		</BrowserRouter>
+        </div>
+    )
+}
+
+
+items control. Yes, and we have to write one more parameter, which is called less exact because it should match the exact route control s and we have to create the.Now, what about the browser router because we have to display the number in every page you got here.
+
+in app.js
+
+import Bootstrap from '../node_modules/bootstrap/dist/css/bootstrap.min.css';
+
+in navbar.js
+
+import React from 'react';
+
+export default function Navbar() {
+  return (
+    <div>
+      <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <a class="navbar-brand" href="#">Navbar</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav mx-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="/">Home <span class="sr-only"></span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/additem">Add Item</a>
+            </li>
+          </ul>
+          <ul className='navbar-nav ml-auto'>
+            <li className="nav-item">
+              <a href="/cart" className="nav-link">Cart </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+  )
+}
+
+creating reducers folder inside that add below 3 reducer files
+--------------------------
+itemsReducer.js
+we have to create the initial data.
+So before adding the any item dynamically, we have to show some items statically, that means you can see after creating the complication only we should be able to show some data to the users.
+That's the reason we have to use the six products data as our static data in the register.
+So you can add any data as like you want.
+
+itemsReducer.js
+
+const initialData={
+    items: [{
+            itemName: 'Realme 5 (Crystal Purple, 32 GB) (3 GB RAM)',
+            itemImage:'https://images-eu.ssl-images-amazon.com/images/I/41GKsqweZ1L._SL500_AC_SS350_.jpg',
+            itemPrice:'10000'
+    },
+    {
+            itemName: 'Realme 3 Pro (Lighting Purple, 64 GB) (4 GB RAM)',
+            itemImage:'https://images-na.ssl-images-amazon.com/images/I/71awFg9gYfL._SX679_.jpg',
+            itemPrice:'12000'
+    },
+    {
+        itemName: 'Samsung Galaxy A50 (Blue, 64 GB) (4 GB RAM)',
+        itemImage:'https://fdn2.gsmarena.com/vv/bigpic/images/I/71awFg9gYfL._SX679_.jpg',
+        itemPrice:'13500'
+},
+{
+    
+    itemName: 'Redmi 8A (Sunset Red, 32 GB) (2 GB RAM)',
+    itemImage:'https://images-na.ssl-images-amazon.com/images/I/71awFg9gYfL._SX679_.jpg',
+    itemPrice:'11400'
+},
+{
+    itemName: 'Samsung Galaxy  (Blue, 64 GB) (4 GB RAM)',
+    itemImage:'https://fdn2.gsmarena.com/vv/bigpic/images/I/71awFg9gYfL._SX679_.jpg',
+    itemPrice:'13500'
+},
+{
+itemName: 'Redmi 10A (Sunset Red, 32 GB) (2 GB RAM)',
+itemImage:'https://images-na.ssl-images-amazon.com/images/I/71awFg9gYfL._SX679_.jpg',
+itemPrice:'11400'
+}
+]
+}
+
+function itemsReducer(state=initialData,action)
+{
+    return state
+
+}
+
+export default itemsReducer
+
+cartReducer.js
+
+const initialData={
+    cartitems:[]
+}
+function cartReducer(state=initialData,action)
+{
+    return state
+}
+export default cartReducer
+
+
+Combine reducers from react, not react, redux, control, as we need to create the rootreducer. Here we need to add key value pairs of the remaining reducers. combined reducers function accepts the object as a parameter.
+
+rootReducer.js
+
+import { combineReducers } from "redux";
+import cartReducer from "./cartReducer";
+import itemsReducer from "./itemsReducer";
+
+const rootReducer=combineReducers({
+    itemsReducer:itemsReducer,
+    cartReducer:cartReducer
+})
+export default rootReducer
+
+we have to create the store in the app.js and we should not create the normal store.We have to create the persist store. So first I will import the required modules from the persist and store.
+
+
